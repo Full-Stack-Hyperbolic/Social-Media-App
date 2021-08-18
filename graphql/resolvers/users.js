@@ -1,24 +1,33 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { UserInputError } = require('apollo-server');
 
 const { SECRETE_KEY } = require('../../config.js');
 const User = require('../../models/User');
 
 module.exports = {
   Mutation: {
-    // parent/_: from previous action
+    // parent / _: from previous action - required to have access to the args (second param)
     // args: destructured to 'registerInput' coming from ./typeDefs.js registerInput param in register method
-    // context:
-    // info:
+    // context: (not used)
+    // info: (not used)
     async register(
       _,
-      { registerInput: { username, email, password, confirmPassword } },
-      context,
-      info
+      { registerInput: { username, email, password, confirmPassword } }
     ) {
       // TODO: Validate user data
       // TODO: Check if user already exists
-      // TODO: Hash password for db & create auth token
+      const user = await User.findOne({ username });
+      if (user) {
+        //   user already exists
+        throw new UserInputError('Username is already registered', {
+          // The following error object will be used on our front-end
+          errors: {
+            username: 'This username is already registered!',
+          },
+        });
+      }
+      // Hash password for db & create auth token
       password = await bcrypt.hash(password, 12);
 
       const newUser = new User({
