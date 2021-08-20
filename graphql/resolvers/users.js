@@ -34,6 +34,8 @@ module.exports = {
         throw new UserInputError('Errors', { errors });
       }
 
+      const user = await User.findOne({ username });
+
       if (!user) {
         // user doesn't exist
         errors.general = 'User not found';
@@ -45,7 +47,10 @@ module.exports = {
         throw new UserInputError('Incorrect credentials', { errors });
       }
 
-      const token = gengerateToken(user);
+      const token = generateToken(user);
+
+      // console.log('User = ', user);
+      // console.log('User._doc = ', user._doc);
 
       return {
         ...user._doc,
@@ -69,13 +74,18 @@ module.exports = {
         throw new UserInputError('Errors:', { errors });
       }
       // TODO: Check if user already exists
-      const user = await User.findOne({ username });
+      const user =
+        (await User.findOne({ username })) || User.findOne({ email });
+      // const user2 = await User.findOne({ email });
+      // if (user2) {
+      //   throw new UserInputError('Email already exists, please use another');
+      // }
       if (user) {
         //   user already exists
-        throw new UserInputError('Username is already registered', {
+        throw new UserInputError('Username or email is already registered', {
           // The following error object will be used on our front-end
           errors: {
-            username: 'This username is already registered!',
+            username: 'This username or email is already registered!',
           },
         });
       }
