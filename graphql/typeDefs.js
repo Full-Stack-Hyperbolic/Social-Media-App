@@ -44,5 +44,9 @@ module.exports = gql`
     login(username: String!, password: String!): User!
     createPost(body: String!): Post!
     deletePost(postId: ID!): String!
+    createComment(postId: ID!, body: String!): Post!
+    deleteComment(postId: ID!, commentId: ID!): Post!
+    # likePost will act as a 'toggle', handling un-like as well
+    likePost(postId: ID!): Post!
   }
 `;
