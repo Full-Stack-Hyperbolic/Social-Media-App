@@ -1,4 +1,5 @@
 const { ApolloServer } = require('apollo-server');
+const { PubSub } = require('graphql-subscriptions');
 const gql = require('graphql-tag');
 const mongoose = require('mongoose');
 
@@ -7,11 +8,13 @@ const resolvers = require('./graphql/resolvers');
 const { MONGODB } = require('./config.js');
 const PORT = process.env.PORT || 5000;
 
+const pubsub = new PubSub();
+
 // Create server instance
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => ({ req }),
+  context: ({ req }) => ({ req, pubsub }),
 });
 
 mongoose

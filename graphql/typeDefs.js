@@ -49,4 +49,7 @@ module.exports = gql`
     # likePost will act as a 'toggle', handling un-like as well
     likePost(postId: ID!): Post!
   }
+  type Subscription {
+    newPost: Post!
+  }
 `;
