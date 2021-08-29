@@ -58,8 +58,8 @@ module.exports = {
       password = await bcrypt.hash(password, 12);
 
       const newUser = new User({
-        email,
-        username,
+        email: email.toLowerCase(),
+        username: username.toLowerCase(),
         password,
         createdAt: new Date().toISOString(),
       });
@@ -82,7 +82,11 @@ module.exports = {
         throw new UserInputError('Errors', { errors });
       }
 
-      const user = await User.findOne({ username });
+      const usernameLower = username.toLowerCase();
+
+      const user = await User.findOne({ username: usernameLower });
+
+      // console.log(user);
 
       if (!user) {
         // user doesn't exist
@@ -96,9 +100,6 @@ module.exports = {
       }
 
       const token = generateToken(user);
-
-      console.log('User = ', user);
-      console.log('User._doc = ', user._doc);
 
       return {
         ...user._doc,
