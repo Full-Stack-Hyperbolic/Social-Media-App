@@ -1,4 +1,3 @@
-import { Container } from 'semantic-ui-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import MenuBar from './Components/MenuBar';
